@@ -1,0 +1,64 @@
+<template>
+    <lightning-card>
+        <lightning-layout multiple-rows="true">
+            <!-- Passenger Details -->
+            <template for:each={passengerObjLst} for:index="index" for:item="eachPassenger">
+                <lightning-layout-item key={eachPassenger.CW_Seat_Number__c} size="12">
+                    <lightning-card class="passenger-card" icon-name="standard:person_name">
+                        <h3 slot="title">{eachPassenger.CW_Seat_Number__c}</h3>
+                        <lightning-layout class="slds-box" multiple-rows="true">
+                            <!-- Name Input -->
+                            <lightning-layout-item size="12" padding="around-small">
+                                <lightning-input data-id={index} type="text" required="true" label="Name"
+                                    name="Name" value={eachPassenger.Name} onchange={handleInputChange}>
+                                </lightning-input>
+                            </lightning-layout-item>
+                            <!-- Gender Combobox -->
+                            <lightning-layout-item size="12" padding="around-small">
+                                <lightning-combobox data-id={index} name="CW_Gender__c" required="true" label="Gender"
+                                    value={eachPassenger.CW_Gender__c} options={genderOptions}
+                                    onchange={handleInputChange}>
+                                </lightning-combobox>
+                            </lightning-layout-item>
+                            <!-- Age Input -->
+                            <lightning-layout-item size="12" padding="around-small">
+                                <lightning-input data-id={index} type="number" required="true" label="Age"
+                                    name="CW_Age__c" value={eachPassenger.CW_Age__c}
+                                    onchange={handleInputChange}>
+                                </lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-card>
+                </lightning-layout-item>
+            </template>
+
+            <!-- Reservation Details -->
+            <lightning-layout-item size="12" padding="around-small">
+                <lightning-textarea onchange={handleFieldChange} value={reservationObj.CW_Address__c}
+                    name="CW_Address__c" required="true" label="Address">
+                </lightning-textarea>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small">
+                <lightning-input onchange={handleFieldChange} type="text" value={reservationObj.CW_Phone__c}
+                    label="Phone Number" name="CW_Phone__c" required="true">
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small">
+                <lightning-input type="number" name="CW_Total_Amount__c" label="Total Price" disabled
+                    value={reservationObj.CW_Total_Amount__c} formatter="currency">
+                </lightning-input>
+            </lightning-layout-item>
+
+            <!-- Navigation Buttons -->
+            <lightning-layout-item size="12" padding="around-small" class="slds-align_absolute-center">
+                <!-- Back Button -->
+                <lightning-button icon-name="utility:chevronleft" label="Back" variant="brand-outline" onclick={onPreviousPage}>
+                </lightning-button>
+                <!-- Save Button -->
+                <lightning-button icon-position="right" icon-name="utility:chevronright" variant="brand-outline"
+                    label="Save" title="Save" onclick={onSave}>
+                </lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

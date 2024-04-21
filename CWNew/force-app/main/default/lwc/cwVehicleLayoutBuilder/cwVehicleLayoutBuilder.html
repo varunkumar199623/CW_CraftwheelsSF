@@ -1,0 +1,20 @@
+<!--
+    File Name: cwvehicleLayoutBuilder.html
+    Description: Lightning Web Component template to display vehicle layout information.
+    Author: Varun Kumar Sirisilla
+-->
+
+<template>
+  <!-- Display a spinner while loading -->
+  <lightning-spinner class="slds-is-fixed" variant="brand" alternative-text="Please wait while loading"
+      if:true={showSpinner}>
+  </lightning-spinner>
+
+  <!-- Pass necessary attributes to the child component -->
+  <c-cw-vehicle-layout
+      onstartspinner={startSpinner}
+      onstopspinner={stopSpinner}
+      rec-id={recordId}
+      layout-obj={layoutObj}>
+  </c-cw-vehicle-layout>
+</template>

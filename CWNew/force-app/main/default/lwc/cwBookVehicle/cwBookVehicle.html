@@ -1,0 +1,91 @@
+<template>
+    <!-- Lightning card with spinner -->
+    <lightning-card>
+        <lightning-spinner class="slds-is-fixed" variant="brand" alternative-text="Please wait while loading" if:true={showSpinner}></lightning-spinner>
+
+        <!-- Book vehicle header component -->
+        <c-cw-book-vehicle-header></c-cw-book-vehicle-header>
+
+        <!-- Lightning progress indicator -->
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="12" padding="around-small">
+                <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                    <!-- Progress steps -->
+                    <template for:each={steps} for:item="step">
+                        <lightning-progress-step label={step.label} value={step.value} key={step.value}></lightning-progress-step>
+                    </template>
+                </lightning-progress-indicator>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- First Page -->
+        <template if:true={showFirstPage}>
+            <!-- Record edit form -->
+            <lightning-record-edit-form object-api-name="CW_Route__c">
+                <lightning-layout multiple-rows="true">
+                    <!-- Origin field -->
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field lwc:ref="CW_Origin__c" field-name="CW_Origin__c"></lightning-input-field>
+                    </lightning-layout-item>
+                    <!-- Destination field -->
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input-field lwc:ref="CW_Destination__c" field-name="CW_Destination__c"></lightning-input-field>
+                    </lightning-layout-item>
+                    <!-- Travel date field -->
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-input lwc:ref="travelDate" required type="date" name="travelDate" label="Travel Date" placeholder="Select Date"></lightning-input>
+                    </lightning-layout-item>
+                    <!-- Get Trips button -->
+                    <lightning-layout-item size="12" padding="around-small">
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Get Trips" title="Get Trips" onclick={onGetTrips}></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-record-edit-form>
+            <!-- Trips list -->
+            <template if:true={trips}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="AvailableBusesheader slds-p-around_medium">
+                            <h2 class="slds-text-heading_medium">Available Buses</h2>
+                        </div>
+                    </lightning-layout-item>
+                    <template for:each={trips} for:item="trip" for:index="index">
+                        <lightning-layout-item class="slds-box" key={trip.Id} size="12" padding="around-small">
+                            <lightning-card class="trip-card" icon-name="standard:travel_mode">
+                                <!-- Book button -->
+                                <lightning-button value={trip} slot="actions" variant="brand-outline" label="Book" title="Book" onclick={onBook}></lightning-button>
+                                <!-- Trip details -->
+                                <h3 slot="title" class="slds-text-heading_medium">
+                                    {trip.CW_Route__r.CW_Origin__c} ➔ {trip.CW_Route__r.CW_Destination__c}
+                                </h3>
+                                <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
+                                    <li><strong>Departure Time:</strong><lightning-formatted-date-time value={trip.CW_Departure__c} year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit"></lightning-formatted-date-time></li>
+                                    <li><strong>Arrival Time:</strong><lightning-formatted-date-time value={trip.CW_Arrival__c} year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit"></lightning-formatted-date-time></li>
+                                    <li><strong>Price:</strong><lightning-formatted-number value={trip.CW_Price__c} format-style="currency"></lightning-formatted-number></li>
+                                </ul>
+                            </lightning-card>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </template>
+        </template>
+
+        <!-- Second Page -->
+        <template if:true={showSecondPage}>
+            <c-cw-vehicle-layout onstartspinner={startSpinner} onstopspinner={stopSpinner} onpreviouspage={previousPage} onnextpageevent={nextPageEvent} selected-trip={selectedTrip} preview-mode="true" layout-obj={layoutObj}></c-cw-vehicle-layout>
+        </template>
+
+        <!-- Third Page -->
+        <template if:true={showThirdPage}>
+            <c-cw-capture-passenger-details onstartspinner={startSpinner} onstopspinner={stopSpinner} onnextpage={nextPage} onpreviouspage={previousPage} trip-obj-for-update={tripObjForUpdate} reservation-obj={reservationObj} passenger-obj-lst={passengerObjLst}></c-cw-capture-passenger-details>
+        </template>
+
+        <!-- Fourth Page -->
+        <template if:true={showFourthPage}>
+            <div class="confirmation slds-p-around_medium">
+                <p class="slds-text-heading_medium">Thank You!</p>
+                <p>Your booking is confirmed.</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>

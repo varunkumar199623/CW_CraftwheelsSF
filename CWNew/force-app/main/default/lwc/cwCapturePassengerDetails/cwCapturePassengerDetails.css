@@ -1,0 +1,5 @@
+.passenger-card {
+    border: 1px solid #d8dde6; /* Add border */
+    border-radius: 0.25rem; /* Add border radius */
+    padding: 0; /* Remove default padding */
+}

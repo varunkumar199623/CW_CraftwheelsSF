@@ -1,0 +1,15 @@
+.seatButtonAvailableStyle{
+    width:10px;
+    color:#00008B;
+    border-color: #00008B;
+}
+.seatButtonSelectedStyle{
+    width:10px;
+    background-color:green;
+    color: white;
+}
+.seatButtonBookedStyle{
+    width:10px;
+    background-color:red;
+    color: white;
+}

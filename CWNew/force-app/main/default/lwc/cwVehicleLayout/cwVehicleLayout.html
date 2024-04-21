@@ -1,0 +1,86 @@
+<!-- 
+    Lightning Web Component for handling vehicle layout modifications and submission.
+    @Author: Varun Kumar Sirisilla
+-->
+<template>
+    <lightning-card icon-name="standard:travel_mode">
+        <!-- Action buttons -->
+        <lightning-button-group slot="actions">
+            <lightning-button if:false={previewMode} variant="brand-outline" onclick={onAddRow} icon-name="utility:add"
+                label="Add Row" title="Add Row"></lightning-button>
+            <lightning-button if:false={previewMode} variant="brand-outline" onclick={onReset}
+                icon-name="action:reset_password" label="Reset" title="Reset"></lightning-button>
+        </lightning-button-group>
+
+        <!-- Layout for seat selection -->
+        <lightning-layout multiple-rows="true">
+            <!-- Input for manual entry of seat number -->
+            <lightning-layout-item padding="around-small" size="12">
+                <lightning-input if:false={previewMode} placeholder="Enter Seat Number" value={currentSeatNumber}
+                    required onchange={onSeatNumberManualEntryChange} type="text"
+                    label="Enter Seat Number"></lightning-input>
+            </lightning-layout-item>
+
+            <!-- Iterating over rows -->
+            <template iterator:it={layoutObj.rows}>
+                <lightning-layout-item key={it.value.rowNo} padding="around-small" size="12">
+                    <button style="width:10px" name={it.value.rowNo}
+                        class="slds-button slds-button_brand slds-button_stretch">{it.value.rowNo}</button> &nbsp;&nbsp;
+
+                    <!-- Iterating over seats -->
+                    <template for:each={it.value.seats} for:item="eachSeat" for:index="seatIndex">
+                        <b key={it.value.rowNo}>
+                            <!-- Render button for each seat -->
+                            <template if:true={eachSeat.seatNoLabel}>
+                                <button disabled={eachSeat.disabled} name={it.index} onclick={onSeatSelection}
+                                    value={seatIndex} class={eachSeat.class}>{eachSeat.seatNoLabel}</button>
+                            </template>
+                            <template if:false={eachSeat.seatNoLabel}>
+                                <!-- Render empty button if no seat number -->
+                                <button style="width:10px;border-color:white" name={eachSeat.seatNoLabel}
+                                    class="slds-button slds-button_neutral slds-button_stretch">&nbsp;</button>
+                            </template>
+                        </b>
+                    </template>
+
+                    <!-- Action menu for each row -->
+                    <template if:true={it.last}>
+                        <lightning-button-menu if:false={previewMode} alternative-text="Actions">
+                            <lightning-menu-item name={it.index} value={it.value.rowNo} onclick={onAddSeat}
+                                icon-name="utility:add" label="Add Seat"></lightning-menu-item>
+                            <lightning-menu-item name={it.index} value={it.value.rowNo} onclick={onEmptySpace}
+                                icon-name="utility:spacer" label="Add Empty Space"></lightning-menu-item>
+                            <lightning-menu-item name={it.index} value={it.value.rowNo} onclick={onAddRow}
+                                icon-name="utility:add" label="Add Row"></lightning-menu-item>
+                            <lightning-menu-item name={it.index} value={it.value.rowNo} onclick={onDeleteEntireRow}
+                                icon-name="utility:delete" label="Delete Row"></lightning-menu-item>
+                        </lightning-button-menu>
+                    </template>
+                </lightning-layout-item>
+            </template>
+
+            <!-- Legend for seat statuses -->
+            <lightning-layout-item class="slds-align_absolute-center" padding="around-small" size="3">
+                <button name="Available" class={seatAvailableClass}><b>A</b></button>
+                &nbsp;- AVAILABLE
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-align_absolute-center" padding="around-small" size="3">
+                <button name="Selected" class={seatSelectedClass}>S</button>
+                &nbsp;- SELECTED
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-align_absolute-center" padding="around-small" size="3">
+                <button name="Booked" class={seatBookedClass}>B</button>
+                &nbsp;- BOOKED
+            </lightning-layout-item>
+
+            <!-- Navigation buttons -->
+            <lightning-layout-item class="slds-align_absolute-center" padding="around-small" size="12">
+                <lightning-button if:true={previewMode} icon-name="utility:chevronleft" label="Back"
+                    variant="brand-outline" onclick={onPreviousPage}>
+                </lightning-button>
+                <lightning-button icon-position="right" onclick={onSubmit} icon-name="utility:chevronright"
+                    label="Submit" title="submit" variant="brand-outline"></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>
